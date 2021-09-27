@@ -1,0 +1,6 @@
+.job-details-card {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #000000;
+}
