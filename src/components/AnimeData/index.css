@@ -1,23 +1,14 @@
 .link-item {
+  display: flex;
+  flex-direction: column;
   text-decoration: none;
-  margin-bottom: 30px;
-  border-radius: 10px;
-  flex-wrap: wrap;
-  margin-right: 40px;
-  background-size: cover;
-}
-
-@media screen and (max-width: 768px) and (max-width: 991px) {
-  .link-item {
-    width: 100%;
-    margin-right: 0px;
-  }
+  background-size: contain;
+  flex-grow: 1;
 }
 
 .job-item {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
   background-color: #272727;
   padding: 20px;
   border-radius: 8px;
@@ -30,18 +21,21 @@
 
 .title {
   color: #ffffff;
+  flex-wrap: wrap;
+  font-size: 20px;
 }
 
-.rating-container {
+.items-details-container {
   display: flex;
   flex-direction: column;
-  margin-left: 15px;
-  line-height: 1px;
+  margin-left: 20px;
+  margin-top: 20px;
 }
 
 .title-container {
   display: flex;
   flex-direction: column;
+
   line-height: 1px;
   margin-left: 15px;
 }
@@ -52,7 +46,7 @@
 }
 .star-icon {
   color: #fbbf24;
-  margin-top: 8px;
+  margin-top: 15px;
 }
 .rating {
   margin-left: 5px;
@@ -92,4 +86,20 @@
 .line {
   color: #f1f5f9;
   width: 100%;
+}
+.head-cont {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 180%;
+  background-size: cover;
+}
+.head-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.head-2nd-container {
+  width: 100%;
+  overflow: auto;
 }

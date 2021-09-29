@@ -1,12 +1,9 @@
 import {Redirect, Route} from 'react-router-dom'
+import {withAuthenticationRequired} from '@auth0/auth0-react'
 import Cookie from 'js-cookie'
 
-const ProtectedRoute = props => {
-  const token = Cookie.get('jwt_token')
-  if (token === undefined) {
-    return <Redirect to="/login" />
-  }
-  return <Route {...props} />
-}
+const ProtectedRoute = ({component, ...props}) => (
+  <Route component={withAuthenticationRequired(component)} {...props} />
+)
 
 export default ProtectedRoute

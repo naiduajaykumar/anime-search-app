@@ -2,10 +2,9 @@
 import {Component} from 'react'
 import Cookies from 'js-cookie'
 import Loader from 'react-loader-spinner'
-import {AiFillStar} from 'react-icons/ai'
-import {MdLocationOn} from 'react-icons/md'
+
 import {HiOutlineExternalLink} from 'react-icons/hi'
-import {BsFillBriefcaseFill} from 'react-icons/bs'
+import Reviews from '../Reviews'
 
 import './index.css'
 
@@ -23,11 +22,12 @@ class AnimeItemDetails extends Component {
   }
 
   componentDidMount() {
-    this.getJobData()
+    this.getAnimeData()
   }
 
-  getJobData = async () => {
+  getAnimeData = async () => {
     const {id} = this.props.match.params
+    console.log(id)
 
     this.setState({
       apiStatus: apiStatusConstants.inProgress,
@@ -43,7 +43,6 @@ class AnimeItemDetails extends Component {
     const response = await fetch(jobDetailsApiUrl, options)
     if (response.ok) {
       const fetchedData = await response.json()
-      console.log(fetchedData)
 
       const animeDetails = fetchedData.data
 
@@ -51,8 +50,7 @@ class AnimeItemDetails extends Component {
         apiStatus: apiStatusConstants.success,
         animeDetails,
       })
-    }
-    if (response.status === 404 || response.status === 400) {
+    } else {
       this.setState({
         apiStatus: apiStatusConstants.failure,
       })
@@ -77,52 +75,77 @@ class AnimeItemDetails extends Component {
         We cannot seem to find the page you are looking for.
       </p>
 
-      <button onClick={this.getJobData} type="button" className="retry-button">
+      <button
+        onClick={this.getAnimeData}
+        type="button"
+        className="retry-button"
+      >
         Retry
       </button>
     </div>
   )
 
-  renderJobDetailsView = () => {
+  renderAnimeDetailsView = () => {
     if (this.props) {
       const {animeDetails} = this.state
+      console.log(animeDetails.id)
 
       return (
         <>
-          <div className="job-details-card">
+          <div className="items">
             <div className="logo-container">
               <img
-                src={animeDetails.cover_image}
+                src={animeDetails.banner_image}
                 alt="job details company logo"
-                className="logo"
+                className="cover-img"
               />
-              <div className="title-container">
+            </div>
+
+            <div className="anime-details-card">
+              <div className="title-container-item">
                 <h1 className="title">{animeDetails.titles.en}</h1>
-                <div className="rating-container">
-                  <AiFillStar className="star-icon" />
-                  <p className="rating">{animeDetails.rating}</p>
-                </div>
+                <a
+                  href={animeDetails.trailer_url}
+                  className="text link-sec link-name"
+                >
+                  Watch Trailer
+                  <HiOutlineExternalLink className="link-icon" />
+                </a>
               </div>
-            </div>
-            <div className="details-container">
-              <div className="about-details">
-                <MdLocationOn className="location-icon" />
-                <p className="text">{animeDetails.location}</p>
-                <BsFillBriefcaseFill className="location-icon" />
-                <p className="text">{animeDetails.employment_type}</p>
-              </div>
-              <div className="package-container">
-                <p className="pack-text">{animeDetails.package_per_annum}</p>
-              </div>
-            </div>
-            <hr className="line" />
-            <div className="desc-container">
-              <div className="title-container">
+              <div className="details-container-each">
                 <div>
-                  <h1 className="title desc-head">Description</h1>
+                  <p className="rating">
+                    Season Year : {animeDetails.season_year}
+                  </p>
+
+                  <p className="rating">
+                    Episodes : {animeDetails.episodes_count}
+                  </p>
+
+                  <p className="rating">
+                    Duration : {animeDetails.episode_duration}min
+                  </p>
+                </div>
+                <div className="genre-container">
+                  <p className="rating">
+                    Genres :{' '}
+                    {animeDetails.genres.splice(8).map(each => (
+                      <span>{each}, </span>
+                    ))}
+                  </p>
                 </div>
               </div>
-              <p className="text">{animeDetails.descriptions.en}</p>
+              <hr className="line" />
+              <div className="desc-container">
+                <div className="title-container">
+                  <div>
+                    <h1 className="title desc-head">Description</h1>
+                  </div>
+                </div>
+                <p className="text">{animeDetails.descriptions.en}</p>
+              </div>
+
+              <Reviews animeDetails={animeDetails} key={animeDetails.id} />
             </div>
           </div>
         </>
@@ -131,12 +154,12 @@ class AnimeItemDetails extends Component {
     return this.renderFailureView()
   }
 
-  renderJobDetails = () => {
+  renderAnimeDetails = () => {
     const {apiStatus} = this.state
 
     switch (apiStatus) {
       case apiStatusConstants.success:
-        return this.renderJobDetailsView()
+        return this.renderAnimeDetailsView()
       case apiStatusConstants.failure:
         return this.renderFailureView()
       case apiStatusConstants.inProgress:
@@ -149,8 +172,8 @@ class AnimeItemDetails extends Component {
   render() {
     return (
       <>
-        <div className="job-item-details-container">
-          {this.renderJobDetails()}
+        <div className="anime-item-details-container">
+          {this.renderAnimeDetails()}
         </div>
       </>
     )

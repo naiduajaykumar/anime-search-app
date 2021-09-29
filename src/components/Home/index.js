@@ -1,15 +1,15 @@
-import {useState, Component} from 'react'
-import {useHistory} from 'react-router-dom'
+import {Component} from 'react'
 
 import {BsSearch} from 'react-icons/bs'
 import Loader from 'react-loader-spinner'
+
 import Cookies from 'js-cookie'
 
 import AnimeData from '../AnimeData'
-
+import LogoutButton from '../LogoutButton'
 import './index.css'
 
-const apiStatusJobsDataConstants = {
+const apiStatusAnimeDataConstants = {
   initial: 'INITIAL',
   success: 'SUCCESS',
   failure: 'FAILURE',
@@ -19,28 +19,41 @@ const apiStatusJobsDataConstants = {
 class Home extends Component {
   state = {
     animeList: [],
-    apiJobsStatus: apiStatusJobsDataConstants.initial,
+    apiAnimeStatus: apiStatusAnimeDataConstants.initial,
     searchInput: '',
+    selectValue: 'title',
   }
 
   componentDidMount() {
-    this.getJobs()
+    this.getAnime()
   }
 
-  getJobs = async () => {
+  getAnime = async () => {
     this.setState({
-      apiJobsStatus: apiStatusJobsDataConstants.inProgress,
+      apiAnimeStatus: apiStatusAnimeDataConstants.inProgress,
     })
     const jwtToken = Cookies.get('jwt_token')
 
-    const {searchInput} = this.state
-    console.log(searchInput)
-    let jobsApiUrl
+    const {searchInput, selectValue} = this.state
+
+    let animeApiUrl
 
     if (searchInput !== '') {
-      jobsApiUrl = `https://api.aniapi.com/v1/anime?title=${searchInput}%20`
+      switch (selectValue) {
+        case 'Title':
+          animeApiUrl = `https://api.aniapi.com/v1/anime?title=${searchInput}`
+          break
+        case 'Genre':
+          animeApiUrl = `https://api.aniapi.com/v1/anime?genres=${searchInput}`
+          break
+        case 'Description':
+          animeApiUrl = `https://api.aniapi.com/v1/anime?descriptions=%${searchInput}%`
+          break
+        default:
+          animeApiUrl = `https://api.aniapi.com/v1/anime?title=${searchInput}`
+      }
     } else {
-      jobsApiUrl = `https://api.aniapi.com/v1/anime`
+      animeApiUrl = `https://api.aniapi.com/v1/anime`
     }
     const options = {
       headers: {
@@ -48,15 +61,14 @@ class Home extends Component {
       },
       method: 'GET',
     }
-    const response = await fetch(jobsApiUrl, options)
+    const response = await fetch(animeApiUrl, options)
     const fetchedData = await response.json()
 
     if (fetchedData.status_code === 404) {
       this.setState({
-        apiJobsStatus: apiStatusJobsDataConstants.failure,
+        apiAnimeStatus: apiStatusAnimeDataConstants.failure,
       })
     } else {
-      console.log(fetchedData)
       const updatedData = fetchedData.data.documents.map(each => ({
         coverImage: each.cover_image,
         genres: each.genres,
@@ -70,13 +82,13 @@ class Home extends Component {
       }))
       this.setState({
         animeList: updatedData,
-        apiJobsStatus: apiStatusJobsDataConstants.success,
+        apiAnimeStatus: apiStatusAnimeDataConstants.success,
       })
     }
   }
 
   enterSearchInput = () => {
-    this.getJobs()
+    this.getAnime()
   }
 
   onEnterSearchInput = event => {
@@ -89,14 +101,19 @@ class Home extends Component {
     this.setState({searchInput: event.target.value})
   }
 
-  renderJobsListView = () => {
+  handleChange = event => {
+    this.setState({selectValue: event.target.value})
+  }
+
+  renderAnimeListView = () => {
     const {animeList} = this.state
+
     const shouldShowJobsList = animeList.length > 0
     return shouldShowJobsList ? (
-      <div className="all-anime-container">
+      <div className="all-anime">
         <ul className="anime-list">
-          {animeList.map(job => (
-            <AnimeData animeData={job} key={job.id} />
+          {animeList.map(anime => (
+            <AnimeData animeData={anime} key={anime.id} />
           ))}
         </ul>
       </div>
@@ -118,7 +135,7 @@ class Home extends Component {
     )
   }
 
-  renderJobsFailureView = () => (
+  renderAnimeFailureView = () => (
     <div className="anime-error-view-container">
       <div className="no-products-view">
         <img
@@ -144,33 +161,45 @@ class Home extends Component {
   )
 
   renderSearchInput = () => {
-    const {searchInput} = this.state
+    const {searchInput, selectValue} = this.state
     return (
-      <div className="search-container">
-        <input
-          value={searchInput}
-          type="search"
-          className="search-input"
-          placeholder="Search"
-          onChange={this.onChangeSearchInput}
-          onKeyDown={this.onEnterSearchInput}
-        />
-        <button onClick={this.getJobs} type="button" className="seac-btn">
-          <BsSearch className="search-icon" />
-        </button>
+      <div className="header">
+        <div className="search-container">
+          <select
+            className="drop search-input"
+            value={selectValue}
+            onChange={this.handleChange}
+          >
+            <option value="Title">Title</option>
+            <option value="Genre">Genre</option>
+            <option value="Description">Description</option>
+          </select>
+          <input
+            value={searchInput}
+            type="search"
+            className="search-input"
+            placeholder="Search"
+            onChange={this.onChangeSearchInput}
+            onKeyDown={this.onEnterSearchInput}
+          />
+          <button onClick={this.getAnime} type="button" className="seac-btn">
+            <BsSearch className="search-icon" />
+          </button>
+        </div>
+        <LogoutButton />
       </div>
     )
   }
 
   renderData = () => {
-    const {apiJobsStatus} = this.state
+    const {apiAnimeStatus} = this.state
 
-    switch (apiJobsStatus) {
-      case apiStatusJobsDataConstants.success:
-        return this.renderJobsListView()
-      case apiStatusJobsDataConstants.failure:
-        return this.renderJobsFailureView()
-      case apiStatusJobsDataConstants.inProgress:
+    switch (apiAnimeStatus) {
+      case apiStatusAnimeDataConstants.success:
+        return this.renderAnimeListView()
+      case apiStatusAnimeDataConstants.failure:
+        return this.renderAnimeFailureView()
+      case apiStatusAnimeDataConstants.inProgress:
         return this.renderLoadingView()
       default:
         return null
@@ -180,11 +209,9 @@ class Home extends Component {
   render() {
     return (
       <>
-        <div className="app-container">
-          <div className="all-jobs-section">
-            {this.renderSearchInput()}
-            {this.renderData()}
-          </div>
+        <div className="all-anime-container">
+          {this.renderSearchInput()}
+          {this.renderData()}
         </div>
       </>
     )

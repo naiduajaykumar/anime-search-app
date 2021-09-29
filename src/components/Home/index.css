@@ -1,10 +1,23 @@
-.app-container {
+.all-anime-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   background-color: #000000;
+  align-items: center;
+  justify-content: center;
+}
+.all-anime {
+  width: 100%;
+  display: flex;
+  overflow: auto;
   background-size: cover;
+  margin-right: 40px;
+}
+
+.products-heading {
+  color: #475569;
+  font-family: 'Roboto';
+  font-size: 20px;
+  font-weight: 500;
 }
 .anime-error-view-container {
   height: 100vh;
@@ -14,63 +27,12 @@
   align-items: center;
   color: aliceblue;
 }
-
-.all-jobs-section {
-  display: flex;
-  flex-direction: column;
-  background-size: cover;
-  padding: 20px;
-}
-
-@media screen and (min-width: 768px) {
-  .all-jobs-section {
-    flex-direction: column;
-    justify-content: space-between;
-    padding-bottom: 60px;
-    background-size: cover;
-  }
-}
-
-@media screen and (min-width: 768px) {
-  .all-jobs-section {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .jobs-list {
-    display: flex;
-    flex-wrap: wrap;
-    padding-left: 0;
-    list-style: none;
-  }
-}
-
-.products-heading {
-  color: #475569;
-  font-family: 'Roboto';
-  font-size: 20px;
-  font-weight: 500;
-}
-
-@media screen and (min-width: 768px) {
-  .products-heading {
-    font-size: 32px;
-  }
-}
-
 .loader-container {
   display: flex;
   height: 100vh;
   background-size: cover;
   justify-content: center;
   align-items: center;
-}
-
-.products-list {
-  display: flex;
-  flex-wrap: wrap;
-  padding-left: 0;
 }
 
 .no-products-view {
@@ -147,12 +109,14 @@
 .search-container {
   border-radius: 5px;
   display: flex;
+  background-size: cover;
   margin-top: 20px;
   flex-wrap: nowrap;
   width: 500px;
   height: 35px;
   border: 1px solid #f1f5f9;
   background-color: #000000;
+  align-self: center;
   justify-content: space-between;
 }
 .search-input {
@@ -176,4 +140,15 @@
 }
 .line {
   color: #f1f5f9;
+}
+.drop {
+  width: 30% !important;
+  font-family: Roboto !important;
+  border-right: #ffffff 1px solid;
+}
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
 }

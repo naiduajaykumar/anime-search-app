@@ -1,6 +1,38 @@
-.job-details-card {
+.items {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  background-size: cover;
+}
+.anime-details-card {
+  display: flex;
+  flex-direction: column;
   background-color: #000000;
+  padding: 20px;
+  overflow: auto;
+  min-height: 100vh;
+}
+.cover-img {
+  height: 100%;
+  width: 100%;
+}
+.title-container-item {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+.title {
+  font-size: 20px;
+  overflow-wrap: inherit;
+}
+
+.link-name {
+  color: darkcyan;
+}
+.link-icon {
+  margin-left: 8px;
+  margin-top: 12px;
+}
+.details-container-each {
+  display: flex;
+  flex-direction: column;
 }
